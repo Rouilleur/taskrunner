@@ -2,7 +2,7 @@ package com.rouilleur.emcservices.jobs;
 
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -17,9 +17,8 @@ public class EmcJobRepositoryImpl implements EmcJobRepository{
     static Collection<EmcJob> emcJobCollection;
 
     @Override
-    public Collection<EmcJob> findSomething() {
+    public Collection<EmcJob> findAllJobs() {
         System.out.println("Searching ...");
-
         return emcJobCollection;
     }
 

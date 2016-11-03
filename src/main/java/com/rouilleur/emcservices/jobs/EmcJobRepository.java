@@ -1,6 +1,5 @@
 package com.rouilleur.emcservices.jobs;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
 
@@ -10,13 +9,9 @@ import java.util.Collection;
 
 
 public interface EmcJobRepository {
-    Collection<EmcJob> findSomething();
+    Collection<EmcJob> findAllJobs();
 
     void save(EmcJob emcJob);
 
 }
 
-
-//public interface EmcJobRepository extends JpaRepository<EmcJob, Long >{
-//    Collection<EmcJob> findBySubmiter(String Submiter);
-//}

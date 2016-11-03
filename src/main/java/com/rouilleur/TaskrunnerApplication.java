@@ -21,7 +21,7 @@ public class TaskrunnerApplication {
 
 
     @Bean
-    public CommandLineRunner demo(EmcJobRepository repository) {
+    public CommandLineRunner init(EmcJobRepository repository) {
         return (args) -> {
             System.out.println("Just another CMLRunner");
             repository.save(new EmcJob("Another submiter"));
