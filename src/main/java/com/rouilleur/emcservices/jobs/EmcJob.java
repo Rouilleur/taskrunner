@@ -1,38 +1,84 @@
 package com.rouilleur.emcservices.jobs;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Rouilleur on 31/10/2016.
  */
 
 
-@Entity
+
 public class EmcJob {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    final static Logger logger = LoggerFactory.getLogger(EmcJobRepositoryDevImpl.class);
+    private static AtomicLong jobCounter = new AtomicLong();
 
-    private String submiter;
+    public enum JobStatus {
+        CREATED,
+        RUNNING,
+        SUCCES,
+        FAILED,
+        ABORTED;
+    }
+    private final Long id;
 
-    protected EmcJob(){
+    private JobStatus status;
 
+    private final String submitter;
+
+    @JsonFormat(pattern="dd/MM/yy HH:mm:ss")
+    private final Date submitDate;
+
+    private String description;
+
+    public EmcJob(String submitter, String description){
+        this.id = jobCounter.incrementAndGet();
+        this.status=JobStatus.CREATED;
+        this.submitter = submitter;
+        this.description=description;
+        this.submitDate =  new Date();
     }
 
-    public EmcJob(String submiter){
-        //this.id = 42L;
-        this.submiter = submiter;
+    public void run(){
+        logger.info("Starting to run job nb " + id);
+        return;
     }
+
+    static public void initJobCounter(long initialValue){
+        jobCounter.set(initialValue);
+        return;
+    }
+
 
     public Long getId() {
         return id;
     }
 
-    public String getSubmiter() {
-        return submiter;
+    public Date getSubmitDate() {
+        return submitDate;
+    }
+
+    public JobStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(JobStatus status) {
+        this.status = status;
+    }
+
+    public String getSubmitter() {
+        return submitter;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

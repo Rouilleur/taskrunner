@@ -1,6 +1,6 @@
 package com.rouilleur.emcservices.swagger;
 
-import com.rouilleur.emcservices.service.EmcJobRestController;
+import com.rouilleur.emcservices.controller.EmcJobRestController;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,10 +22,9 @@ public class Swagger2SpringBoot {
 
     @Bean
     public Docket taskrunnerApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .enableUrlTemplating(true)
-
-                .pathMapping("/")
+        return new Docket(
+                DocumentationType.SWAGGER_2)
+                    .pathMapping("/")
                 ;
     }
 
