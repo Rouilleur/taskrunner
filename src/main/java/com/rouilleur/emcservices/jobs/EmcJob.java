@@ -4,16 +4,12 @@ package com.rouilleur.emcservices.jobs;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Rouilleur on 31/10/2016.
  */
-
 
 
 public class EmcJob {
@@ -27,6 +23,7 @@ public class EmcJob {
         SUCCES,
         FAILED,
         ABORTED;
+
     }
     private final Long id;
 
@@ -36,6 +33,9 @@ public class EmcJob {
 
     @JsonFormat(pattern="dd/MM/yy HH:mm:ss")
     private final Date submitDate;
+
+    @JsonFormat(pattern="dd/MM/yy HH:mm:ss")
+    private Date endDate;
 
     private String description;
 
@@ -57,13 +57,21 @@ public class EmcJob {
         return;
     }
 
-
     public Long getId() {
         return id;
     }
 
+
     public Date getSubmitDate() {
         return submitDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public JobStatus getStatus() {

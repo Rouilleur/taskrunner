@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.UiConfiguration;
@@ -15,17 +17,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
-@ComponentScan(basePackageClasses = {
-        EmcJobRestController.class
-})
+//@ComponentScan(basePackageClasses = {
+//        EmcJobRestController.class
+//})
 public class Swagger2SpringBoot {
 
     @Bean
     public Docket taskrunnerApi() {
         return new Docket(
                 DocumentationType.SWAGGER_2)
-                    .pathMapping("/")
-                ;
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
     }
 
     @Bean
@@ -36,7 +40,7 @@ public class Swagger2SpringBoot {
                 "alpha",      // apiSorter             => alpha
                 "schema",     // defaultModelRendering => schema
                 UiConfiguration.Constants.DEFAULT_SUBMIT_METHODS,
-                false,        // enableJsonEditor      => true | false
+                true,        // enableJsonEditor      => true | false
                 true);
 
 

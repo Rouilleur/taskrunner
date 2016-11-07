@@ -3,6 +3,7 @@ package com.rouilleur.emcservices.jobs;
 import com.rouilleur.emcservices.Exceptions.BadRequestException;
 import com.rouilleur.emcservices.Exceptions.ErrorType;
 import com.rouilleur.emcservices.Exceptions.InternalErrorException;
+import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -34,12 +35,12 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
     }
 
     @Override
-    public EmcJob findJobById(Long id) {
+    public EmcJob findJobById(Long id) throws BadRequestException {
         if (emcJobMap != null){
             return emcJobMap.get(id);
         }else {
-            logger.error("Trying to get job from an uninitialized repository");
-            return null;
+            //TODO : Bof... what if the method is reused and called with null param even the request was correct (exception would be misleading)
+            throw new BadRequestException(ErrorType.NULL_PARAMETER);
         }
     }
 
@@ -49,7 +50,33 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
         return emcJobMap.values();
     }
 
-    //TODO : Throw exceptions and return error message in abnormal situations instead of returning empty array
+    @Override
+    public Collection<EmcJob> findAllJobsFiltered(String submitter, String status) {
+        ArrayList<EmcJob> result = new ArrayList<>();
+        if (submitter == null && status == null){
+            return emcJobMap.values();
+        }else if( submitter != null && status == null){
+            for (EmcJob job: emcJobMap.values()) {
+                if (submitter.equals(job.getSubmitter())) {
+                    result.add(job);
+                }
+            }
+        }else if( submitter == null && status != null){
+            for (EmcJob job: emcJobMap.values()) {
+                if (status.equals(job.getStatus().toString())) {
+                    result.add(job);
+                }
+            }
+        }else {
+            for (EmcJob job: emcJobMap.values()) {
+                if (status.equals(job.getStatus().toString()) && submitter.equals(job.getSubmitter())) {
+                    result.add(job);
+                }
+            }
+        }
+        return result;
+    }
+
     @Override
     public Collection<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException {
 
@@ -85,5 +112,35 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
         return;
     }
 
+    //TODO : what if the job is finished or failed already, should we raise a 409 ?
+    @Override
+    public void stopJob(Long jobId) throws ResourceNotFoundException, BadRequestException {
+        if (jobId == null){
+            throw new BadRequestException(ErrorType.NULL_PARAMETER);
+        }else if (emcJobMap.containsKey(jobId) == false){
+            throw new ResourceNotFoundException(ErrorType.RESSOURCE_NOT_FOUND);
+        }else if ( emcJobMap.get(jobId).getStatus().equals(EmcJob.JobStatus.CREATED) || emcJobMap.get(jobId).getStatus().equals(EmcJob.JobStatus.RUNNING)){
+                logger.info("Stopping job");
+                //TODO : real stop method
+                emcJobMap.get(jobId).setStatus(EmcJob.JobStatus.ABORTED);
+        }else {
+            logger.warn("Already Stopped");
+        }
+    }
+
+    @Override
+    public void deleteJob(Long jobId) throws ResourceNotFoundException, BadRequestException {
+        if (jobId == null){
+            throw new BadRequestException(ErrorType.NULL_PARAMETER);
+        }else if (emcJobMap.containsKey(jobId) == false){
+            throw new ResourceNotFoundException(ErrorType.RESSOURCE_NOT_FOUND);
+        }else {
+            logger.info("Stopping job");
+            //TODO : real stop method
+            emcJobMap.get(jobId).setStatus(EmcJob.JobStatus.ABORTED);
+            logger.info("Removing job");
+            emcJobMap.remove(jobId);
+        }
+    }
 
 }

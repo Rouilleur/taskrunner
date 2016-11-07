@@ -24,7 +24,14 @@ public enum ErrorType {
     NULL_PARAMETER(HttpStatus.BAD_REQUEST,
             400001,
             "Unexpected null parameter",
-            "Something was wrong with your request : a null parameter was passed");
+            "Something was wrong with your request : a null parameter was passed"),
+
+
+
+    RESSOURCE_NOT_FOUND(HttpStatus.NOT_FOUND,
+            404001,
+            "Resource not found",
+            "The resource you specified doesn't exist");
 
 
 

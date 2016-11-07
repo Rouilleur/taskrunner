@@ -32,9 +32,19 @@ public class ExceptionManager {
     //TODO : Use same source for the HttpStatus (currently, it can be inconsistent between the annotation and the error message)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InternalErrorException.class)
-    public void handleInternalError(InternalErrorException ex, ServerHttpResponse response) {
+    @ResponseBody
+    public ErrorReport handleInternalError(InternalErrorException ex) {
         logger.error("Internal Error : " + ex.getErrorType().getTitle());
-        response.setStatusCode(ex.getErrorType().getHttpReturn());
+        return new ErrorReport(ex.getErrorType());
+    }
+
+    //TODO : Use same source for the HttpStatus (currently, it can be inconsistent between the annotation and the error message)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseBody
+    public ErrorReport handleResourceNotFoundError(ResourceNotFoundException ex) {
+        logger.error("Resource not found Error : " + ex.getErrorType().getTitle());
+        return new ErrorReport(ex.getErrorType());
     }
 
 }

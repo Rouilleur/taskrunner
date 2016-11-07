@@ -2,9 +2,6 @@ package com.rouilleur.emcservices.Exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -30,6 +27,14 @@ public class ErrorReport {
         this.errorDate = new Date();
     }
 
+    public HttpStatus getHttpReturn() {
+        return httpReturn;
+    }
+
+    public int getHttpCode() {
+        return httpCode;
+    }
+
     public int getApplicationErrorCode() {
         return applicationErrorCode;
     }
@@ -42,15 +47,7 @@ public class ErrorReport {
         return description;
     }
 
-    public HttpStatus getHttpReturn() {
-        return httpReturn;
-    }
-
     public Date getErrorDate() {
         return errorDate;
-    }
-
-    public int getHttpCode() {
-        return httpCode;
     }
 }
