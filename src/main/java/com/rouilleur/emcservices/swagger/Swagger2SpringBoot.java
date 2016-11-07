@@ -1,9 +1,6 @@
 package com.rouilleur.emcservices.swagger;
 
-import com.rouilleur.emcservices.controller.EmcJobRestController;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;

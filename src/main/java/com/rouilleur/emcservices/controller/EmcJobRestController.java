@@ -5,6 +5,7 @@ import com.rouilleur.emcservices.Exceptions.InternalErrorException;
 import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
 import com.rouilleur.emcservices.jobs.EmcJob;
 import com.rouilleur.emcservices.jobs.EmcJobRepository;
+import com.rouilleur.emcservices.service.JobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/emcJobs")
 public class EmcJobRestController {
-    private final EmcJobRepository emcJobRepository;
+    private final JobService jobService;
     final static Logger logger = LoggerFactory.getLogger(EmcJobRestController.class);
 
 
@@ -31,7 +32,7 @@ public class EmcJobRestController {
     Collection<EmcJob> findAllJobsFiltered(@RequestParam(value = "submitter", required = false) String submitter,
                                    @RequestParam(value = "status", required = false) String status){
 
-        return this.emcJobRepository.findAllJobsFiltered(submitter,status);
+        return this.jobService.findAllJobsFiltered(submitter,status);
     }
 
 
@@ -40,7 +41,7 @@ public class EmcJobRestController {
             produces="application/json")
     EmcJob findJobById(@PathVariable Long jobId) throws BadRequestException, InternalErrorException {
 
-        return this.emcJobRepository.findJobById(jobId);
+        return this.jobService.findJobById(jobId);
 
     }
 
@@ -49,7 +50,7 @@ public class EmcJobRestController {
     @RequestMapping(value = "/{jobId}", method = RequestMethod.DELETE,
             produces="application/json")
     void deleteJob(@PathVariable  Long jobId) throws BadRequestException, ResourceNotFoundException {
-        emcJobRepository.deleteJob(jobId);
+        jobService.deleteJob(jobId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -57,15 +58,15 @@ public class EmcJobRestController {
     @RequestMapping(value = "/{jobId}/stopJob", method = RequestMethod.PUT,
             produces="application/json")
     void stopJob(@PathVariable  Long jobId) throws BadRequestException, ResourceNotFoundException {
-        emcJobRepository.stopJob(jobId);
+        jobService.stopJob(jobId);
     }
 
     @ResponseBody
     @RequestMapping(value = "/findBySubmitter", method = RequestMethod.GET,
             produces="application/json")
-    Collection<EmcJob> findJobBySubmitter(@RequestParam(value="Submitter", defaultValue="") String submitter) throws BadRequestException, InternalErrorException {
+    Collection<EmcJob> findJobsBySubmitter(@RequestParam(value="Submitter", defaultValue="") String submitter) throws BadRequestException, InternalErrorException {
 
-        return this.emcJobRepository.findJobsBySubmitter(submitter);
+        return this.jobService.findJobsBySubmitter(submitter);
     }
 
 
@@ -76,8 +77,8 @@ public class EmcJobRestController {
 
 
     @Autowired
-    public EmcJobRestController(EmcJobRepository emcJobRepository) {
-        this.emcJobRepository = emcJobRepository;
+    public EmcJobRestController(JobService jobService) {
+        this.jobService = jobService;
     }
 
 }

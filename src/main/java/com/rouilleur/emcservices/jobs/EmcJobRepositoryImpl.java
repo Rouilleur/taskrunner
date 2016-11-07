@@ -9,10 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static javafx.scene.input.KeyCode.T;
 
 /**
  * Created by Rouilleur on 31/10/2016.
@@ -130,17 +134,55 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
 
     @Override
     public void deleteJob(Long jobId) throws ResourceNotFoundException, BadRequestException {
+        logger.info("Gonna sleep");
         if (jobId == null){
             throw new BadRequestException(ErrorType.NULL_PARAMETER);
         }else if (emcJobMap.containsKey(jobId) == false){
             throw new ResourceNotFoundException(ErrorType.RESSOURCE_NOT_FOUND);
         }else {
-            logger.info("Stopping job");
+            logger.info("Stopping job " + jobId);
             //TODO : real stop method
             emcJobMap.get(jobId).setStatus(EmcJob.JobStatus.ABORTED);
-            logger.info("Removing job");
+            logger.info("Removing job" + jobId);
             emcJobMap.remove(jobId);
         }
     }
 
+
+    public EmcJob findOne(Long aLong) {
+        return null;
+    }
+
+    public boolean exists(Long aLong) {
+        return false;
+    }
+
+    public Iterable<EmcJob> findAll() {
+        return null;
+    }
+
+    public Iterable<EmcJob> findAll(Iterable<Long> iterable) {
+        return null;
+    }
+
+    public long count() {
+        return 0;
+    }
+
+    public void delete(Long aLong) {
+
+    }
+
+    public void delete(EmcJob emcJob) {
+
+    }
+
+    public void delete(Iterable<? extends EmcJob> iterable) {
+
+    }
+
+    public void deleteAll() {
+
+    }
 }
+
