@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ExceptionManager {
 
-    final static Logger logger = LoggerFactory.getLogger(ExceptionManager.class);
+    private final static Logger logger = LoggerFactory.getLogger(ExceptionManager.class);
 
     //TODO : Use same source for the HttpStatus (currently, it can be inconsistent between the annotation and the error message)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -42,7 +42,7 @@ public class ExceptionManager {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseBody
     public ErrorReport handleResourceNotFoundError(ResourceNotFoundException ex) {
-        logger.error("Resource not found Error : " + ex.getErrorType().getTitle());
+        logger.warn("Resource not found Error : " + ex.getErrorType().getTitle());
         return new ErrorReport(ex.getErrorType());
     }
 

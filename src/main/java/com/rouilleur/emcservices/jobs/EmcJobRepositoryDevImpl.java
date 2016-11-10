@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class EmcJobRepositoryDevImpl extends EmcJobRepositoryImpl{
 
-    final static Logger logger = LoggerFactory.getLogger(EmcJobRepositoryDevImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(EmcJobRepositoryDevImpl.class);
 
     @Override
     public void init(){

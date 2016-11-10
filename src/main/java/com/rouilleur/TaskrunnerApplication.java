@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class TaskrunnerApplication {
-    final static Logger logger = LoggerFactory.getLogger(TaskrunnerApplication.class);
+    private final static Logger logger = LoggerFactory.getLogger(TaskrunnerApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(TaskrunnerApplication.class, args);

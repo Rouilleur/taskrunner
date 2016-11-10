@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -15,15 +14,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class EmcJob {
 
-    final static Logger logger = LoggerFactory.getLogger(EmcJobRepositoryDevImpl.class);
-    private static AtomicLong jobCounter = new AtomicLong();
+    private final static Logger logger = LoggerFactory.getLogger(EmcJobRepositoryDevImpl.class);
+    private static final AtomicLong jobCounter = new AtomicLong();
 
     public enum JobStatus {
         CREATED,
         RUNNING,
-        SUCCES,
+        SUCCESS,
         FAILED,
-        ABORTED;
+        ABORTED
 
     }
     private final Long id;
@@ -38,7 +37,7 @@ public class EmcJob {
     @JsonFormat(pattern="dd/MM/yy HH:mm:ss")
     private Date endDate;
 
-    private String description;
+    private final String description;
 
     public EmcJob(String submitter, String description){
         this.id = jobCounter.incrementAndGet();
@@ -50,15 +49,10 @@ public class EmcJob {
 
     public void run(){
         logger.info("Starting to run job nb " + id);
-
-
-
-        return;
     }
 
     static public void initJobCounter(long initialValue){
         jobCounter.set(initialValue);
-        return;
     }
 
     public Long getId() {

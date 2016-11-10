@@ -4,7 +4,6 @@ import com.rouilleur.emcservices.Exceptions.BadRequestException;
 import com.rouilleur.emcservices.Exceptions.InternalErrorException;
 import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
 import com.rouilleur.emcservices.jobs.EmcJob;
-import com.rouilleur.emcservices.jobs.EmcJobRepository;
 import com.rouilleur.emcservices.service.JobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +28,8 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET,
             produces="application/json")
-    Collection<EmcJob> findAllJobsFiltered(@RequestParam(value = "submitter", required = false) String submitter,
-                                   @RequestParam(value = "status", required = false) String status){
+    Iterable<EmcJob> findAllJobsFiltered(@RequestParam(value = "submitter", required = false) String submitter,
+                                   @RequestParam(value = "status", required = false) String status) throws InternalErrorException {
 
         return this.jobService.findAllJobsFiltered(submitter,status);
     }
@@ -49,7 +48,7 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/{jobId}", method = RequestMethod.DELETE,
             produces="application/json")
-    void deleteJob(@PathVariable  Long jobId) throws BadRequestException, ResourceNotFoundException {
+    void deleteJob(@PathVariable  Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException {
         jobService.deleteJob(jobId);
     }
 
@@ -57,16 +56,32 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/{jobId}/stopJob", method = RequestMethod.PUT,
             produces="application/json")
-    void stopJob(@PathVariable  Long jobId) throws BadRequestException, ResourceNotFoundException {
+    void stopJob(@PathVariable  Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException {
         jobService.stopJob(jobId);
     }
 
     @ResponseBody
     @RequestMapping(value = "/findBySubmitter", method = RequestMethod.GET,
             produces="application/json")
-    Collection<EmcJob> findJobsBySubmitter(@RequestParam(value="Submitter", defaultValue="") String submitter) throws BadRequestException, InternalErrorException {
+    Iterable<EmcJob> findJobsBySubmitter(@RequestParam(value="Submitter", defaultValue="") String submitter) throws BadRequestException, InternalErrorException {
 
         return this.jobService.findJobsBySubmitter(submitter);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/findByStatus", method = RequestMethod.GET,
+            produces="application/json")
+    Iterable<EmcJob> findJobsByStatus(@RequestParam(value="Status", defaultValue="") String submitter) throws BadRequestException, InternalErrorException {
+
+        return this.jobService.findJobsBySubmitter(submitter);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/stopAllJobs", method = RequestMethod.PUT,
+            produces="application/json")
+    void stopAllJobs() throws InternalErrorException {
+
+         this.jobService.stopAllJobs();
     }
 
 

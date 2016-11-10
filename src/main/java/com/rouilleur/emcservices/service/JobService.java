@@ -12,14 +12,17 @@ import java.util.Collection;
  */
 public interface JobService {
 
-    Collection<EmcJob> findAllJobsFiltered(String submitter, String status);
+    Iterable<EmcJob> findAllJobsFiltered(String submitter, String status) throws InternalErrorException;
 
     EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException;
 
-    void deleteJob(Long jobId) throws BadRequestException, ResourceNotFoundException;
+    void deleteJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException;
 
-    void stopJob(Long jobId) throws BadRequestException, ResourceNotFoundException;
+    void stopJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException;
 
-    Collection<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException;
+    Iterable<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException;
 
+    Iterable<EmcJob> findJobsByStatus(String status) throws BadRequestException, InternalErrorException;
+
+    void stopAllJobs();
 }

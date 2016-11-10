@@ -4,8 +4,6 @@ package com.rouilleur.emcservices.jobs;
 import com.rouilleur.emcservices.Exceptions.BadRequestException;
 import com.rouilleur.emcservices.Exceptions.InternalErrorException;
 import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 
@@ -16,41 +14,28 @@ import java.util.Collection;
 
 public interface EmcJobRepository {
 
-    void init();
+    EmcJob save(EmcJob emcJob) throws InternalErrorException;
 
-    EmcJob findJobById(Long id) throws BadRequestException;
+    Iterable save(Iterable<EmcJob> iterable) throws InternalErrorException;
 
-    Collection<EmcJob> findAllJobs();
+    EmcJob findOne(Long aLong) throws InternalErrorException;
 
-    Collection<EmcJob> findAllJobsFiltered(String submitter, String status);
+    boolean exists(Long aLong) throws InternalErrorException;
 
-    Collection<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException;
+    Iterable<EmcJob> findAll() throws InternalErrorException;
 
-    Collection<EmcJob> findJobsByStatus(String status);
+    //Iterable<EmcJob> findAll(Iterable<Long> iterable);
 
-    void save(EmcJob emcJob) throws InternalErrorException;
+    long count() throws InternalErrorException;
 
-    void stopJob(Long jobId) throws ResourceNotFoundException, BadRequestException;
-
-    void deleteJob(Long jobId) throws ResourceNotFoundException, BadRequestException;
-
-
-    public EmcJob findOne(Long aLong);
-
-    public boolean exists(Long aLong);
-
-    public Iterable<EmcJob> findAll();
-
-    public Iterable<EmcJob> findAll(Iterable<Long> iterable);
-
-    public long count();
-
-    public void delete(Long aLong);
+    void delete(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException;
 
     //public void delete(EmcJob emcJob);
 
     //public void delete(Iterable<? extends EmcJob> iterable);
 
-    public void deleteAll();
+    void deleteAll();
+
+    void init();
 }
 
