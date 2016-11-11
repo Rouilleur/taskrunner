@@ -1,4 +1,4 @@
-package com.rouilleur.emcservices.Exceptions;
+package com.rouilleur.emcservices.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;

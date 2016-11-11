@@ -1,14 +1,14 @@
-package com.rouilleur.emcservices.jobs;
+package com.rouilleur.emcservices.jobs.repository;
 
-import com.rouilleur.emcservices.Exceptions.ErrorType;
-import com.rouilleur.emcservices.Exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.ErrorType;
+import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.jobs.EmcJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Rouilleur on 31/10/2016.

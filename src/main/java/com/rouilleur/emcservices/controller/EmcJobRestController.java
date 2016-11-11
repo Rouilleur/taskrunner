@@ -1,8 +1,8 @@
 package com.rouilleur.emcservices.controller;
 
-import com.rouilleur.emcservices.Exceptions.BadRequestException;
-import com.rouilleur.emcservices.Exceptions.InternalErrorException;
-import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
+import com.rouilleur.emcservices.exceptions.BadRequestException;
+import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.ResourceNotFoundException;
 import com.rouilleur.emcservices.jobs.EmcJob;
 import com.rouilleur.emcservices.service.JobService;
 import org.slf4j.Logger;
@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 
 /**
  * Created by Rouilleur on 31/10/2016.
@@ -82,6 +80,13 @@ public class EmcJobRestController {
     void stopAllJobs() throws InternalErrorException {
 
          this.jobService.stopAllJobs();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteAllFinishedJobs", method = RequestMethod.DELETE,
+            produces="application/json")
+    void deleteAllFinishedJobs() throws InternalErrorException {
+        this.jobService.deleteAllFinishedJobs();
     }
 
 

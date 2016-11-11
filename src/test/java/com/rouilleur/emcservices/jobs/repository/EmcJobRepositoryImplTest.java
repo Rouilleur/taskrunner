@@ -1,8 +1,9 @@
-package com.rouilleur.emcservices.jobs;
+package com.rouilleur.emcservices.jobs.repository;
 
-import com.rouilleur.emcservices.Exceptions.ErrorType;
-import com.rouilleur.emcservices.Exceptions.InternalErrorException;
-import com.rouilleur.emcservices.Exceptions.InternalErrorMatcher;
+import com.rouilleur.emcservices.exceptions.ErrorType;
+import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.InternalErrorMatcher;
+import com.rouilleur.emcservices.jobs.EmcJob;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

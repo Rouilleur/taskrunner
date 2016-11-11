@@ -1,4 +1,4 @@
-package com.rouilleur.emcservices.Exceptions;
+package com.rouilleur.emcservices.exceptions;
 
 /**
  * Created by Rouilleur on 06/11/2016.

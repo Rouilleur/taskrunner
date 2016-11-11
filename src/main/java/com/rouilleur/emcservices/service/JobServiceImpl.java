@@ -1,11 +1,11 @@
 package com.rouilleur.emcservices.service;
 
-import com.rouilleur.emcservices.Exceptions.BadRequestException;
-import com.rouilleur.emcservices.Exceptions.ErrorType;
-import com.rouilleur.emcservices.Exceptions.InternalErrorException;
-import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
+import com.rouilleur.emcservices.exceptions.BadRequestException;
+import com.rouilleur.emcservices.exceptions.ErrorType;
+import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.ResourceNotFoundException;
 import com.rouilleur.emcservices.jobs.EmcJob;
-import com.rouilleur.emcservices.jobs.EmcJobRepository;
+import com.rouilleur.emcservices.jobs.repository.EmcJobRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Rouilleur on 07/11/2016.
@@ -23,29 +22,32 @@ public class JobServiceImpl implements JobService {
 
     private final static Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
 
-    @Autowired
     EmcJobRepository emcJobRepository;
 
     @Override
     public Iterable<EmcJob> findAllJobsFiltered(String submitter, String status) throws InternalErrorException {
         ArrayList<EmcJob> result = new ArrayList<>();
         if (submitter == null && status == null){
-            return emcJobRepository.findAll();
+            for (EmcJob job: emcJobRepository.findAll()) {
+                if (!job.isMarkedForDeletion()) {
+                    result.add(job);
+                }
+            }
         }else if( submitter != null && status == null){
             for (EmcJob job: emcJobRepository.findAll()) {
-                if (submitter.equals(job.getSubmitter())) {
+                if (!job.isMarkedForDeletion() && submitter.equals(job.getSubmitter())) {
                     result.add(job);
                 }
             }
         }else if( submitter == null){
             for (EmcJob job: emcJobRepository.findAll()) {
-                if (status.equals(job.getStatus().toString())) {
+                if (!job.isMarkedForDeletion() && status.equals(job.getStatus().toString())) {
                     result.add(job);
                 }
             }
         }else {
             for (EmcJob job: emcJobRepository.findAll()) {
-                if (status.equals(job.getStatus().toString()) && submitter.equals(job.getSubmitter())) {
+                if (!job.isMarkedForDeletion() && status.equals(job.getStatus().toString()) && submitter.equals(job.getSubmitter())) {
                     result.add(job);
                 }
             }
@@ -62,7 +64,7 @@ public class JobServiceImpl implements JobService {
             //getting the job before testing existence
             //otherwise, it could be deleted between the exists and the get
             EmcJob theJob = emcJobRepository.findOne(jobId);
-            if (theJob == null){
+            if (theJob == null || theJob.isMarkedForDeletion()){
                 //TODO : Bof... what if the method is reused and called with null param even the request was correct (exception would be misleading)
                 throw new ResourceNotFoundException(ErrorType.RESOURCE_NOT_FOUND, "Can't find job "+ jobId);
             }else {
@@ -82,11 +84,7 @@ public class JobServiceImpl implements JobService {
             if (jobToDelete == null){
                 throw new ResourceNotFoundException(ErrorType.RESOURCE_NOT_FOUND, "Can't find job "+ jobId);
             }else {
-                logger.info("Stopping job {}", jobId);
-                //TODO : real stop method
-                jobToDelete.setStatus(EmcJob.JobStatus.ABORTED);
-                logger.info("Marking job {} for deletion", jobId);
-                jobToDelete.setMarkedForDeletion(true);
+                jobToDelete.markForDeletion();
             }
         }
     }
@@ -94,24 +92,15 @@ public class JobServiceImpl implements JobService {
     //TODO : what if the job is finished or failed already, should we raise a 409 ?
     @Override
     public void stopJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException {
-        emcJobRepository.findOne(jobId).setStatus(EmcJob.JobStatus.ABORTED);
-
         if (jobId == null){
             throw new BadRequestException(ErrorType.NULL_PARAMETER, "JobId is null");
         }else{
             EmcJob jobToStop = emcJobRepository.findOne(jobId);
-            if (jobToStop == null){
+            if (jobToStop == null  || jobToStop.isMarkedForDeletion()){
                 //TODO : job may be deleted after test
                 throw new ResourceNotFoundException(ErrorType.RESOURCE_NOT_FOUND, "Can't find job "+ jobId);
             }else {
-                if ( jobToStop.getStatus().equals(EmcJob.JobStatus.CREATED) || jobToStop.getStatus().equals(EmcJob.JobStatus.RUNNING)){
-                    logger.info("Stopping job");
-                    //TODO : real stop method
-                    jobToStop.setStatus(EmcJob.JobStatus.ABORTED);
-                    jobToStop.setEndDate(new Date());
-                }else {
-                    logger.warn("Already Stopped");
-                }
+                jobToStop.stop();
             }
         }
     }
@@ -127,8 +116,25 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void stopAllJobs() {
-        //TODO
-        //TODO : lock resource
+    public void stopAllJobs() throws InternalErrorException {
+        for (EmcJob job: emcJobRepository.findAll()) {
+            if (!job.isMarkedForDeletion()) {
+                job.stop();
+            }
+        }
+    }
+
+    @Override
+    public void deleteAllFinishedJobs() throws InternalErrorException {
+        for (EmcJob job: emcJobRepository.findAll()) {
+            if (!job.isMarkedForDeletion() && (job.getStatus() == EmcJob.JobStatus.ABORTED || job.getStatus() == EmcJob.JobStatus.FAILED ||job.getStatus() == EmcJob.JobStatus.SUCCESS)) {
+                job.markForDeletion();
+            }
+        }
+    }
+
+    @Autowired
+    public JobServiceImpl(EmcJobRepository emcJobRepository) {
+        this.emcJobRepository = emcJobRepository;
     }
 }

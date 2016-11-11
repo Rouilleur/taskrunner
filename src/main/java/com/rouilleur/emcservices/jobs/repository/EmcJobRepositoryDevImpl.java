@@ -1,7 +1,8 @@
-package com.rouilleur.emcservices.jobs;
+package com.rouilleur.emcservices.jobs.repository;
 
 
-import com.rouilleur.emcservices.Exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.jobs.EmcJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Repository;
 @Profile("Tests")
 @Primary
 @Repository
-public class EmcJobRepositoryDevImpl extends EmcJobRepositoryImpl{
+public class EmcJobRepositoryDevImpl extends EmcJobRepositoryImpl {
 
     private final static Logger logger = LoggerFactory.getLogger(EmcJobRepositoryDevImpl.class);
 

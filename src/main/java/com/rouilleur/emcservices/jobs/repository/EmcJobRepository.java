@@ -1,11 +1,8 @@
-package com.rouilleur.emcservices.jobs;
+package com.rouilleur.emcservices.jobs.repository;
 
 
-import com.rouilleur.emcservices.Exceptions.BadRequestException;
-import com.rouilleur.emcservices.Exceptions.InternalErrorException;
-import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
-
-import java.util.Collection;
+import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.jobs.EmcJob;
 
 /**
  * Created by Rouilleur on 31/10/2016.

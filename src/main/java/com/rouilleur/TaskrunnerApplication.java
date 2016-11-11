@@ -1,6 +1,6 @@
 package com.rouilleur;
 
-import com.rouilleur.emcservices.jobs.EmcJobRepository;
+import com.rouilleur.emcservices.jobs.repository.EmcJobRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

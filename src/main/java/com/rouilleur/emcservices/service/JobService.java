@@ -1,11 +1,9 @@
 package com.rouilleur.emcservices.service;
 
-import com.rouilleur.emcservices.Exceptions.BadRequestException;
-import com.rouilleur.emcservices.Exceptions.InternalErrorException;
-import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
+import com.rouilleur.emcservices.exceptions.BadRequestException;
+import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.ResourceNotFoundException;
 import com.rouilleur.emcservices.jobs.EmcJob;
-
-import java.util.Collection;
 
 /**
  * Created by Rouilleur on 07/11/2016.
@@ -24,5 +22,7 @@ public interface JobService {
 
     Iterable<EmcJob> findJobsByStatus(String status) throws BadRequestException, InternalErrorException;
 
-    void stopAllJobs();
+    void stopAllJobs() throws InternalErrorException;
+
+    void deleteAllFinishedJobs() throws InternalErrorException;
 }

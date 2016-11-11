@@ -1,7 +1,9 @@
-package com.rouilleur.emcservices.jobs;
+package com.rouilleur.emcservices.jobs.asychronous;
 
-import com.rouilleur.emcservices.Exceptions.ErrorType;
-import com.rouilleur.emcservices.Exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.ErrorType;
+import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.jobs.EmcJob;
+import com.rouilleur.emcservices.jobs.repository.EmcJobRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,6 @@ import org.springframework.stereotype.Component;
 public class JobCleaner {
     private final static Logger logger = LoggerFactory.getLogger(JobCleaner.class);
 
-
-    @Autowired
     EmcJobRepository jobRepository;
 
 
@@ -40,9 +40,10 @@ public class JobCleaner {
                 throw e;
             }
         }
-
-
     }
 
-
+    @Autowired
+    public JobCleaner(EmcJobRepository emcJobRepository) {
+        this.jobRepository = emcJobRepository;
+    }
 }
