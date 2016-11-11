@@ -10,7 +10,7 @@ public enum ErrorType {
     UNDOCUMENTED_INTERNAL(HttpStatus.INTERNAL_SERVER_ERROR,
             500666,
             "Undocumented internal error",
-            "Something unexpected occurred on server side, but we don't know what exactly"),
+            "Something unexpected occurred on server side"),
     REPO_NOT_INITIALIZED(HttpStatus.INTERNAL_SERVER_ERROR,
             500001,
             "Uninitialized job repository",
@@ -20,7 +20,7 @@ public enum ErrorType {
     UNDOCUMENTED_BAD_REQUEST(HttpStatus.BAD_REQUEST,
             400666,
             "Undocumented request error",
-            "Something was wrong with your request, but we don't know what exactly"),
+            "Something is wrong with your request"),
     NULL_PARAMETER(HttpStatus.BAD_REQUEST,
             400001,
             "Unexpected null parameter",
@@ -28,7 +28,7 @@ public enum ErrorType {
 
 
 
-    RESSOURCE_NOT_FOUND(HttpStatus.NOT_FOUND,
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND,
             404001,
             "Resource not found",
             "The resource you specified doesn't exist");

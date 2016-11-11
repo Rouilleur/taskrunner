@@ -38,7 +38,7 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/{jobId}", method = RequestMethod.GET,
             produces="application/json")
-    EmcJob findJobById(@PathVariable Long jobId) throws BadRequestException, InternalErrorException {
+    EmcJob findJobById(@PathVariable Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException {
 
         return this.jobService.findJobById(jobId);
 
@@ -71,9 +71,9 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/findByStatus", method = RequestMethod.GET,
             produces="application/json")
-    Iterable<EmcJob> findJobsByStatus(@RequestParam(value="Status", defaultValue="") String submitter) throws BadRequestException, InternalErrorException {
+    Iterable<EmcJob> findJobsByStatus(@RequestParam(value="Status", defaultValue="") String status) throws BadRequestException, InternalErrorException {
 
-        return this.jobService.findJobsBySubmitter(submitter);
+        return this.jobService.findJobsByStatus(status);
     }
 
     @ResponseBody

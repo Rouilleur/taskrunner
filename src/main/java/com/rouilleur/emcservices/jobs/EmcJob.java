@@ -39,6 +39,10 @@ public class EmcJob {
 
     private final String description;
 
+    //Always assume that a job marked for deletion is currently being deleted
+    //Don't try to access persisted information
+    private boolean markedForDeletion = false;
+
     public EmcJob(String submitter, String description){
         this.id = jobCounter.incrementAndGet();
         this.status=JobStatus.CREATED;
@@ -59,10 +63,10 @@ public class EmcJob {
         return id;
     }
 
-
     public Date getSubmitDate() {
         return submitDate;
     }
+
 
     public Date getEndDate() {
         return endDate;
@@ -86,5 +90,13 @@ public class EmcJob {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean isMarkedForDeletion() {
+        return markedForDeletion;
+    }
+
+    public void setMarkedForDeletion(boolean markedForDeletion) {
+        this.markedForDeletion = markedForDeletion;
     }
 }

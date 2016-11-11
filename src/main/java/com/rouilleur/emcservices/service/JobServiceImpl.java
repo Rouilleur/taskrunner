@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Rouilleur on 07/11/2016.
@@ -49,31 +50,44 @@ public class JobServiceImpl implements JobService {
                 }
             }
         }
+
         return result;
     }
 
     @Override
-    public EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException {
-        if (emcJobRepository.exists(jobId)){
-            return emcJobRepository.findOne(jobId);
-        }else {
-            //TODO : Bof... what if the method is reused and called with null param even the request was correct (exception would be misleading)
-            throw new BadRequestException(ErrorType.NULL_PARAMETER);
+    public EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException {
+        if (jobId == null){
+            throw new BadRequestException(ErrorType.NULL_PARAMETER, "Job Id is null");
+        }else{
+            //getting the job before testing existence
+            //otherwise, it could be deleted between the exists and the get
+            EmcJob theJob = emcJobRepository.findOne(jobId);
+            if (theJob == null){
+                //TODO : Bof... what if the method is reused and called with null param even the request was correct (exception would be misleading)
+                throw new ResourceNotFoundException(ErrorType.RESOURCE_NOT_FOUND, "Can't find job "+ jobId);
+            }else {
+                return theJob;
+            }
         }
     }
 
     @Override
     public void deleteJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException {
         if (jobId == null){
-            throw new BadRequestException(ErrorType.NULL_PARAMETER);
-        }else if (!emcJobRepository.exists(jobId)){
-            throw new ResourceNotFoundException(ErrorType.RESSOURCE_NOT_FOUND);
-        }else {
-            logger.info("Stopping job " + jobId);
-            //TODO : real stop method
-            emcJobRepository.findOne(jobId).setStatus(EmcJob.JobStatus.ABORTED);
-            logger.info("Removing job" + jobId);
-            emcJobRepository.delete(jobId);
+            throw new BadRequestException(ErrorType.NULL_PARAMETER, "Job Id is null");
+        }else{
+            //getting the job before testing existence
+            //otherwise, it could be deleted between the exists and the get
+            EmcJob jobToDelete = emcJobRepository.findOne(jobId);
+            if (jobToDelete == null){
+                throw new ResourceNotFoundException(ErrorType.RESOURCE_NOT_FOUND, "Can't find job "+ jobId);
+            }else {
+                logger.info("Stopping job {}", jobId);
+                //TODO : real stop method
+                jobToDelete.setStatus(EmcJob.JobStatus.ABORTED);
+                logger.info("Marking job {} for deletion", jobId);
+                jobToDelete.setMarkedForDeletion(true);
+            }
         }
     }
 
@@ -83,19 +97,21 @@ public class JobServiceImpl implements JobService {
         emcJobRepository.findOne(jobId).setStatus(EmcJob.JobStatus.ABORTED);
 
         if (jobId == null){
-            throw new BadRequestException(ErrorType.NULL_PARAMETER);
-        }else if (!emcJobRepository.exists(jobId)){
-            throw new ResourceNotFoundException(ErrorType.RESSOURCE_NOT_FOUND);
-        }else {
-            EmcJob jobToDelete = emcJobRepository.findOne(jobId);
-
-            if ( jobToDelete.getStatus().equals(EmcJob.JobStatus.CREATED) || jobToDelete.getStatus().equals(EmcJob.JobStatus.RUNNING)){
-                logger.info("Stopping job");
-                //TODO : real stop method
-                jobToDelete.setStatus(EmcJob.JobStatus.ABORTED);
-                jobToDelete.setEndDate(new Date());
+            throw new BadRequestException(ErrorType.NULL_PARAMETER, "JobId is null");
+        }else{
+            EmcJob jobToStop = emcJobRepository.findOne(jobId);
+            if (jobToStop == null){
+                //TODO : job may be deleted after test
+                throw new ResourceNotFoundException(ErrorType.RESOURCE_NOT_FOUND, "Can't find job "+ jobId);
             }else {
-                logger.warn("Already Stopped");
+                if ( jobToStop.getStatus().equals(EmcJob.JobStatus.CREATED) || jobToStop.getStatus().equals(EmcJob.JobStatus.RUNNING)){
+                    logger.info("Stopping job");
+                    //TODO : real stop method
+                    jobToStop.setStatus(EmcJob.JobStatus.ABORTED);
+                    jobToStop.setEndDate(new Date());
+                }else {
+                    logger.warn("Already Stopped");
+                }
             }
         }
     }

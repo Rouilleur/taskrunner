@@ -28,7 +28,7 @@ public interface EmcJobRepository {
 
     long count() throws InternalErrorException;
 
-    void delete(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException;
+    void delete(Long jobId) throws InternalErrorException;
 
     //public void delete(EmcJob emcJob);
 

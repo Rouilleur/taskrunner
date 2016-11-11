@@ -16,15 +16,17 @@ public class ErrorReport {
     private final String description;
     @JsonFormat(pattern="dd/MM/yy HH:mm:ss")
     private final Date errorDate;
+    private final String additionalDetails;
 
 
-    public ErrorReport(ErrorType error) {
+    public ErrorReport(ErrorType error, String additionalDetails) {
         this.httpReturn = error.getHttpReturn();
         this.httpCode = error.getHttpReturn().value();
         this.applicationErrorCode = error.getApplicationErrorCode();
         this.title = error.getTitle();
         this.description = error.getDescription();
         this.errorDate = new Date();
+        this.additionalDetails = additionalDetails;
     }
 
     public HttpStatus getHttpReturn() {
@@ -49,5 +51,9 @@ public class ErrorReport {
 
     public Date getErrorDate() {
         return errorDate;
+    }
+
+    public String getAdditionalDetails() {
+        return additionalDetails;
     }
 }

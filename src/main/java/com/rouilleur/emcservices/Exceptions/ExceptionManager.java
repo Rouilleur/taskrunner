@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Created by Rouilleur on 06/11/2016.
  */
 
+//TODO : add info about the initial request in logs
+
 
 @ControllerAdvice
 public class ExceptionManager {
@@ -24,8 +26,9 @@ public class ExceptionManager {
     @ResponseBody
     //public void handleBadRequest(BadRequestException ex, ServerHttpResponse response) {
     public ErrorReport handleBadRequest(BadRequestException ex) {
-        logger.warn("Bad Request : " + ex.getErrorType().getTitle());
-        return new ErrorReport(ex.getErrorType());
+        logger.warn("Bad Request : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage());
+        ex.printStackTrace();
+        return new ErrorReport(ex.getErrorType(), ex.getMessage());
     }
 
     //TODO : Use same source for the HttpStatus (currently, it can be inconsistent between the annotation and the error message)
@@ -33,8 +36,8 @@ public class ExceptionManager {
     @ExceptionHandler(InternalErrorException.class)
     @ResponseBody
     public ErrorReport handleInternalError(InternalErrorException ex) {
-        logger.error("Internal Error : " + ex.getErrorType().getTitle());
-        return new ErrorReport(ex.getErrorType());
+        logger.error("Internal Error : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage());
+        return new ErrorReport(ex.getErrorType(), ex.getMessage());
     }
 
     //TODO : Use same source for the HttpStatus (currently, it can be inconsistent between the annotation and the error message)
@@ -42,8 +45,18 @@ public class ExceptionManager {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseBody
     public ErrorReport handleResourceNotFoundError(ResourceNotFoundException ex) {
-        logger.warn("Resource not found Error : " + ex.getErrorType().getTitle());
-        return new ErrorReport(ex.getErrorType());
+        logger.warn("Resource not found Error : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage());
+        return new ErrorReport(ex.getErrorType(), ex.getMessage());
+    }
+
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = Exception.class)
+    @ResponseBody
+    public ErrorReport handleUnexpectedError(Exception ex) {
+
+        logger.error("Unhandled Exception");
+        ex.printStackTrace();
+        return new ErrorReport(ErrorType.UNDOCUMENTED_INTERNAL, "This should not happen");
     }
 
 }

@@ -1,18 +1,14 @@
 package com.rouilleur.emcservices.jobs;
 
-import com.rouilleur.emcservices.Exceptions.BadRequestException;
 import com.rouilleur.emcservices.Exceptions.ErrorType;
 import com.rouilleur.emcservices.Exceptions.InternalErrorException;
-import com.rouilleur.emcservices.Exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Rouilleur on 31/10/2016.
@@ -29,7 +25,7 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
         logger.info("Initializing jobs repository");
 
         if(emcJobMap ==null){
-            emcJobMap = new Hashtable<>();
+            emcJobMap = new ConcurrentHashMap<>();
         }
         logger.info("Repository initialized");
     }
@@ -38,7 +34,7 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
     @Override
     public EmcJob save(EmcJob emcJob) throws InternalErrorException {
         checkRepositoryInitialized();
-        emcJobMap.put(emcJob.getId(),emcJob);
+        emcJobMap.putIfAbsent(emcJob.getId(),emcJob);
         return emcJob;
     }
 

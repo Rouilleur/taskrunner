@@ -14,7 +14,7 @@ public interface JobService {
 
     Iterable<EmcJob> findAllJobsFiltered(String submitter, String status) throws InternalErrorException;
 
-    EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException;
+    EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException;
 
     void deleteJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException;
 
