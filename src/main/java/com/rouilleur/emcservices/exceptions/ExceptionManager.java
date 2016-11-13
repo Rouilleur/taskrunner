@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 
 //TODO : add info about the initial request in logs
+//TODO : simplify all this, a bit too complicated
 
 
 @ControllerAdvice
@@ -26,8 +27,10 @@ public class ExceptionManager {
     @ResponseBody
     //public void handleBadRequest(BadRequestException ex, ServerHttpResponse response) {
     public ErrorReport handleBadRequest(BadRequestException ex) {
-        logger.warn("Bad Request : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage());
-        ex.printStackTrace();
+        logger.warn("Bad Request : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage()+ ((ex.isPrintStack()) ? "\n " +ex.getStackTrace() : ""));
+        if (ex.isPrintStack()){
+            ex.printStackTrace();
+        }
         return new ErrorReport(ex.getErrorType(), ex.getMessage());
     }
 
@@ -36,7 +39,10 @@ public class ExceptionManager {
     @ExceptionHandler(InternalErrorException.class)
     @ResponseBody
     public ErrorReport handleInternalError(InternalErrorException ex) {
-        logger.error("Internal Error : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage());
+        logger.error("Internal Error : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage()+ ((ex.isPrintStack()) ? "\n " +ex.getStackTrace() : ""));
+        if (ex.isPrintStack()){
+            ex.printStackTrace();
+        }
         return new ErrorReport(ex.getErrorType(), ex.getMessage());
     }
 
@@ -45,7 +51,20 @@ public class ExceptionManager {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseBody
     public ErrorReport handleResourceNotFoundError(ResourceNotFoundException ex) {
-        logger.warn("Resource not found Error : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage());
+        logger.warn("Resource not found Error : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage()+ ((ex.isPrintStack()) ? "\n " +ex.getStackTrace() : ""));
+        if (ex.isPrintStack()){
+            ex.printStackTrace();
+        }
+        return new ErrorReport(ex.getErrorType(), ex.getMessage());
+    }
+
+    //TODO : Use same source for the HttpStatus (currently, it can be inconsistent between the annotation and the error message)
+    @ResponseStatus(value = HttpStatus.LOCKED)
+    @ExceptionHandler(LockedResourceException.class)
+    @ResponseBody
+    public ErrorReport handleResourceIsLockedError(LockedResourceException ex) {
+        logger.warn("Resource is currently locked : {}", ex.getErrorType().getTitle() + " -- " + ex.getMessage() + ((ex.isPrintStack()) ? "\n " +ex.getStackTrace() : ""));
+
         return new ErrorReport(ex.getErrorType(), ex.getMessage());
     }
 

@@ -13,4 +13,8 @@ public class BadRequestException extends GenericException  {
     public BadRequestException(ErrorType errorType, String message) {
         super(errorType, message);
     }
+
+    public BadRequestException(ErrorType errorType, String message, Throwable initialException, boolean printStack){
+        super(errorType, message, initialException, printStack);
+    }
 }

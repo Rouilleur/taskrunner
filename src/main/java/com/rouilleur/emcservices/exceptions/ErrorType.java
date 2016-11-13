@@ -26,12 +26,16 @@ public enum ErrorType {
             "Unexpected null parameter",
             "Something was wrong with your request : a null parameter was passed"),
 
-
-
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND,
             404001,
             "Resource not found",
-            "The resource you specified doesn't exist");
+            "The resource you specified doesn't exist"),
+
+    RESOURCE_LOCK_TIMEOUT(HttpStatus.LOCKED,
+            500002,
+                "Timeout while trying to lock resource",
+                "A timeout was reached while trying to acquire lock on the specified resource");
+
 
 
 

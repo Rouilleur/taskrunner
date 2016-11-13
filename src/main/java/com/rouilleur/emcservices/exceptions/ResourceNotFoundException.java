@@ -14,4 +14,8 @@ public class ResourceNotFoundException extends GenericException  {
     public ResourceNotFoundException(ErrorType errorType, String message) {
         super(errorType, message);
     }
+
+    public ResourceNotFoundException(ErrorType errorType, String message, Throwable initialException, boolean printStack){
+        super(errorType, message, initialException, printStack);
+    }
 }

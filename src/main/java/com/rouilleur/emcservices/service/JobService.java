@@ -2,6 +2,7 @@ package com.rouilleur.emcservices.service;
 
 import com.rouilleur.emcservices.exceptions.BadRequestException;
 import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.LockedResourceException;
 import com.rouilleur.emcservices.exceptions.ResourceNotFoundException;
 import com.rouilleur.emcservices.jobs.EmcJob;
 
@@ -16,13 +17,15 @@ public interface JobService {
 
     void deleteJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException;
 
-    void stopJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException;
+    void stopJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException, LockedResourceException;
 
     Iterable<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException;
 
     Iterable<EmcJob> findJobsByStatus(String status) throws BadRequestException, InternalErrorException;
 
-    void stopAllJobs() throws InternalErrorException;
+    void stopAllJobs() throws InternalErrorException, LockedResourceException;
 
     void deleteAllFinishedJobs() throws InternalErrorException;
+
+    void lockJob(Long jobId, int delay) throws ResourceNotFoundException, BadRequestException, InternalErrorException;
 }

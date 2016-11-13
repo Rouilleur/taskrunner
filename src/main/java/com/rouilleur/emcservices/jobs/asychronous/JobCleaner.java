@@ -2,6 +2,7 @@ package com.rouilleur.emcservices.jobs.asychronous;
 
 import com.rouilleur.emcservices.exceptions.ErrorType;
 import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.LockedResourceException;
 import com.rouilleur.emcservices.jobs.EmcJob;
 import com.rouilleur.emcservices.jobs.repository.EmcJobRepository;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ public class JobCleaner {
 
     EmcJobRepository jobRepository;
 
-
+    //TODO : catch Exceptions from asynchronous runners
     @Scheduled(initialDelayString ="${jobs.cleaning.initialDelay}", fixedDelayString = "${jobs.cleaning.delay}")
     private void runJobCleaning() throws InternalErrorException {
         logger.info("Running job cleaner.");
@@ -29,8 +30,12 @@ public class JobCleaner {
         try {
             for (EmcJob aJob: jobRepository.findAll()) {
                 if (aJob.isMarkedForDeletion()){
-                    logger.info("Cleaning job {}", aJob.getId());
-                    jobRepository.delete(aJob.getId());
+                    if (aJob.delete()){
+                        logger.info("Cleaning job {}", aJob.getId());
+                        jobRepository.delete(aJob.getId());
+                    }else{
+                        logger.info("Can't clean job {}, skipping", aJob.getId());
+                    }
                 }
             }
         } catch (InternalErrorException e) {
@@ -39,6 +44,9 @@ public class JobCleaner {
             }else{
                 throw e;
             }
+        } catch (LockedResourceException e) {
+            //NB : this shouldn't happen since delete authorize failures and doesn't pass in code which throw exceptions
+            logger.warn("Can't acquire lock on a resource for deletion");
         }
     }
 

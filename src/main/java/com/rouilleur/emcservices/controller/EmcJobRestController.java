@@ -2,6 +2,7 @@ package com.rouilleur.emcservices.controller;
 
 import com.rouilleur.emcservices.exceptions.BadRequestException;
 import com.rouilleur.emcservices.exceptions.InternalErrorException;
+import com.rouilleur.emcservices.exceptions.LockedResourceException;
 import com.rouilleur.emcservices.exceptions.ResourceNotFoundException;
 import com.rouilleur.emcservices.jobs.EmcJob;
 import com.rouilleur.emcservices.service.JobService;
@@ -54,7 +55,7 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/{jobId}/stopJob", method = RequestMethod.PUT,
             produces="application/json")
-    void stopJob(@PathVariable  Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException {
+    void stopJob(@PathVariable  Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException, LockedResourceException {
         jobService.stopJob(jobId);
     }
 
@@ -77,11 +78,13 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/stopAllJobs", method = RequestMethod.PUT,
             produces="application/json")
-    void stopAllJobs() throws InternalErrorException {
+    void stopAllJobs() throws InternalErrorException, LockedResourceException {
 
          this.jobService.stopAllJobs();
     }
 
+
+    //TODO : Delete All finished jobs (param : older than)
     @ResponseBody
     @RequestMapping(value = "/deleteAllFinishedJobs", method = RequestMethod.DELETE,
             produces="application/json")
@@ -90,9 +93,14 @@ public class EmcJobRestController {
     }
 
 
-    //TODO : Stop All jobs
-
-    //TODO : Delete All finished jobs (param : older than)
+    //TODO : remove after tests
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    @RequestMapping(value = "/{jobId}/lockJob", method = RequestMethod.PUT,
+            produces="application/json")
+    void lockJob(@PathVariable  Long jobId, @RequestParam(value="Delay", defaultValue="5") int delay) throws BadRequestException, ResourceNotFoundException, InternalErrorException {
+        jobService.lockJob(jobId, delay);
+    }
 
 
 
