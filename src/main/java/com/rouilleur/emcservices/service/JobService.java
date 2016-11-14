@@ -11,17 +11,17 @@ import com.rouilleur.emcservices.jobs.EmcJob;
  */
 public interface JobService {
 
-    Iterable<EmcJob> findAllJobsFiltered(String submitter, String status) throws InternalErrorException;
+    Iterable<EmcJob> findAllJobsFiltered(String submitter, String status) throws InternalErrorException, LockedResourceException;
 
-    EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException;
+    EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException, LockedResourceException;
 
     void deleteJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException;
 
     void stopJob(Long jobId) throws BadRequestException, ResourceNotFoundException, InternalErrorException, LockedResourceException;
 
-    Iterable<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException;
+    Iterable<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException, LockedResourceException;
 
-    Iterable<EmcJob> findJobsByStatus(String status) throws BadRequestException, InternalErrorException;
+    Iterable<EmcJob> findJobsByStatus(String status) throws BadRequestException, InternalErrorException, LockedResourceException;
 
     void stopAllJobs() throws InternalErrorException, LockedResourceException;
 

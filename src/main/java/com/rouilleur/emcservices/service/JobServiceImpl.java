@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,31 +25,31 @@ public class JobServiceImpl implements JobService {
     //TODO : possible inconsistencies between user request and result
     //ex : if the job is modified (stopped, refreshed) after being added to result
     //Could be solved by returning a copy of the objects
+    //TODO : improvement : filter by final data (ex : submitter) then refresh jobs then filter by variable data (ex : status)
     @Override
-    public Iterable<EmcJob> findAllJobsFiltered(String submitter, String status) throws InternalErrorException {
+    public Iterable<EmcJob> findAllJobsFiltered(String submitter, String status) throws InternalErrorException, LockedResourceException {
         ArrayList<EmcJob> result = new ArrayList<>();
-        if (submitter == null && status == null){
-            for (EmcJob job: emcJobRepository.findAll()) {
-                if (!job.isMarkedForDeletion()) {
+
+
+        for (EmcJob job: emcJobRepository.findAll()) {
+            if (!job.isMarkedForDeletion()) {
+                //TODO : just for test atm, we could avoid refresh on all jobs for each request
+                job.refresh(false);
+
+                if (submitter == null && status == null){
                     result.add(job);
-                }
-            }
-        }else if( submitter != null && status == null){
-            for (EmcJob job: emcJobRepository.findAll()) {
-                if (!job.isMarkedForDeletion() && submitter.equals(job.getSubmitter())) {
-                    result.add(job);
-                }
-            }
-        }else if( submitter == null){
-            for (EmcJob job: emcJobRepository.findAll()) {
-                if (!job.isMarkedForDeletion() && status.equals(job.getStatus().toString())) {
-                    result.add(job);
-                }
-            }
-        }else {
-            for (EmcJob job: emcJobRepository.findAll()) {
-                if (!job.isMarkedForDeletion() && status.equals(job.getStatus().toString()) && submitter.equals(job.getSubmitter())) {
-                    result.add(job);
+                }else if( submitter != null && status == null){
+                    if (submitter.equals(job.getSubmitter())) {
+                        result.add(job);
+                    }
+                }else if( submitter == null) {
+                    if (status.equals(job.getStatus().toString())) {
+                        result.add(job);
+                    }
+                }else {
+                    if (status.equals(job.getStatus().toString()) && submitter.equals(job.getSubmitter())) {
+                        result.add(job);
+                    }
                 }
             }
         }
@@ -59,7 +58,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException {
+    public EmcJob findJobById(Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException, LockedResourceException {
         if (jobId == null){
             throw new BadRequestException(ErrorType.NULL_PARAMETER, "Job Id is null");
         }else{
@@ -70,6 +69,7 @@ public class JobServiceImpl implements JobService {
                 //TODO : Bof... what if the method is reused and called with null param even the request was correct (exception would be misleading)
                 throw new ResourceNotFoundException(ErrorType.RESOURCE_NOT_FOUND, "Can't find job "+ jobId);
             }else {
+                theJob.refresh(false);
                 return theJob;
             }
         }
@@ -107,12 +107,12 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Iterable<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException {
+    public Iterable<EmcJob> findJobsBySubmitter(String submitter) throws BadRequestException, InternalErrorException, LockedResourceException {
         return findAllJobsFiltered(submitter, null);
     }
 
     @Override
-    public Iterable<EmcJob> findJobsByStatus(String status) throws BadRequestException, InternalErrorException {
+    public Iterable<EmcJob> findJobsByStatus(String status) throws BadRequestException, InternalErrorException, LockedResourceException {
         return findAllJobsFiltered(null, status);
     }
 

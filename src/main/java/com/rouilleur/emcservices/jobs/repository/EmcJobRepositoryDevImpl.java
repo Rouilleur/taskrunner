@@ -30,23 +30,40 @@ public class EmcJobRepositoryDevImpl extends EmcJobRepositoryImpl {
 
         try {
             EmcJob emcJob= new EmcJob("Annie","Playing with Tibers");
+            emcJob.create();
             this.save(emcJob);
             emcJob= new EmcJob("Warwick", "Jungling");
+            emcJob.create();
             this.save(emcJob);
             emcJob= new EmcJob("Soraka", "Healing");
+            emcJob.create();
             this.save(emcJob);
             emcJob= new EmcJob("Kassadin", "Rifting");
+            emcJob.create();
             this.save(emcJob);
             emcJob= new EmcJob("Teemo", "Trippin' on shrooms");
+            emcJob.create();
             this.save(emcJob);
             emcJob= new EmcJob("Urf", "Joking");
+            emcJob.create();
             this.save(emcJob);
             emcJob= new EmcJob("Soraka", "Throwing bananas");
+            emcJob.create();
             this.save(emcJob);
             emcJob= new EmcJob("Teemo", "Feeding");
+            emcJob.create();
             this.save(emcJob);
             emcJob= new EmcJob("Teemo", "Hiding");
+            emcJob.create();
             this.save(emcJob);
+
+
+            for (int i =0; i<1000; i++) {
+                emcJob= new EmcJob("Teemo", "Hiding");
+                emcJob.create();
+                this.save(emcJob);
+            }
+
 
         } catch (InternalErrorException e) {
             logger.error("Can't initialize repository");

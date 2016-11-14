@@ -39,12 +39,6 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
     }
 
     @Override
-    public Iterable save(Iterable<EmcJob> iterable) throws InternalErrorException {
-        checkRepositoryInitialized();
-        return null;
-    }
-
-    @Override
     public EmcJob findOne(Long jobID) throws InternalErrorException {
         checkRepositoryInitialized();
         return emcJobMap.get(jobID);
@@ -62,12 +56,6 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
         return emcJobMap.values();
     }
 
-//    @Override
-//    public Iterable<EmcJob> findAll(Iterable<Long> iterable) throws InternalErrorException {
-//        checkRepositoryInitialized();
-//        return null;
-//    }
-
     @Override
     public long count() throws InternalErrorException {
         checkRepositoryInitialized();
@@ -79,16 +67,6 @@ public class EmcJobRepositoryImpl implements EmcJobRepository {
         checkRepositoryInitialized();
         emcJobMap.remove(jobId);
     }
-
-//    @Override
-//    public void delete(EmcJob emcJob) throws InternalErrorException {
-//        checkRepositoryInitialized();
-//    }
-//
-//    @Override
-//    public void delete(Iterable<? extends EmcJob> iterable) throws InternalErrorException {
-//        checkRepositoryInitialized();
-//    }
 
     @Override
     public void deleteAll() {

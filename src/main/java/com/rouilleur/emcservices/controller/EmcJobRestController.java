@@ -28,7 +28,7 @@ public class EmcJobRestController {
     @RequestMapping(method = RequestMethod.GET,
             produces="application/json")
     Iterable<EmcJob> findAllJobsFiltered(@RequestParam(value = "submitter", required = false) String submitter,
-                                   @RequestParam(value = "status", required = false) String status) throws InternalErrorException {
+                                   @RequestParam(value = "status", required = false) String status) throws InternalErrorException, LockedResourceException {
 
         return this.jobService.findAllJobsFiltered(submitter,status);
     }
@@ -37,7 +37,7 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/{jobId}", method = RequestMethod.GET,
             produces="application/json")
-    EmcJob findJobById(@PathVariable Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException {
+    EmcJob findJobById(@PathVariable Long jobId) throws BadRequestException, InternalErrorException, ResourceNotFoundException, LockedResourceException {
 
         return this.jobService.findJobById(jobId);
 
@@ -62,7 +62,7 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/findBySubmitter", method = RequestMethod.GET,
             produces="application/json")
-    Iterable<EmcJob> findJobsBySubmitter(@RequestParam(value="Submitter", defaultValue="") String submitter) throws BadRequestException, InternalErrorException {
+    Iterable<EmcJob> findJobsBySubmitter(@RequestParam(value="Submitter", defaultValue="") String submitter) throws BadRequestException, InternalErrorException, LockedResourceException {
 
         return this.jobService.findJobsBySubmitter(submitter);
     }
@@ -70,7 +70,7 @@ public class EmcJobRestController {
     @ResponseBody
     @RequestMapping(value = "/findByStatus", method = RequestMethod.GET,
             produces="application/json")
-    Iterable<EmcJob> findJobsByStatus(@RequestParam(value="Status", defaultValue="") String status) throws BadRequestException, InternalErrorException {
+    Iterable<EmcJob> findJobsByStatus(@RequestParam(value="Status", defaultValue="") String status) throws BadRequestException, InternalErrorException, LockedResourceException {
 
         return this.jobService.findJobsByStatus(status);
     }

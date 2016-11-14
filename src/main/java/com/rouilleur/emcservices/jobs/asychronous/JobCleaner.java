@@ -31,7 +31,7 @@ public class JobCleaner {
             for (EmcJob aJob: jobRepository.findAll()) {
                 if (aJob.isMarkedForDeletion()){
                     if (aJob.delete()){
-                        logger.info("Cleaning job {}", aJob.getId());
+                        logger.info("Cleaned job {}", aJob.getId());
                         jobRepository.delete(aJob.getId());
                     }else{
                         logger.info("Can't clean job {}, skipping", aJob.getId());

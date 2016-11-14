@@ -15,6 +15,10 @@ public enum ErrorType {
             500001,
             "Uninitialized job repository",
             "Job repository wasn't correctly initialized"),
+    REFRESH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            500002,
+            "Error while trying to read job info",
+            "An error occurred while trying to read data to refresh job information"),
 
     //Bad request errors
     UNDOCUMENTED_BAD_REQUEST(HttpStatus.BAD_REQUEST,
@@ -32,7 +36,7 @@ public enum ErrorType {
             "The resource you specified doesn't exist"),
 
     RESOURCE_LOCK_TIMEOUT(HttpStatus.LOCKED,
-            500002,
+            423001,
                 "Timeout while trying to lock resource",
                 "A timeout was reached while trying to acquire lock on the specified resource");
 
