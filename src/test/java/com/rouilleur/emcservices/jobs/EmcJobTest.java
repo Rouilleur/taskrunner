@@ -32,7 +32,6 @@ public class EmcJobTest {
     @Test
     public void initJobCounter_newJob_CounterShouldBeIncremented() throws Exception {
 
-        EmcJob.initJobCounter(5);
         EmcJob aJob = new EmcJob("Annie", "Farming");
 
         assertEquals(new Long(6),aJob.getId());

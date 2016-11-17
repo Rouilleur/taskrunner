@@ -26,43 +26,36 @@ public class EmcJobRepositoryDevImpl extends EmcJobRepositoryImpl {
     public void init(){
         super.init();
         logger.info("Adding data for dev purpose");
-        EmcJob.initJobCounter(3);
 
         try {
             EmcJob emcJob= new EmcJob("Annie","Playing with Tibers");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
             emcJob= new EmcJob("Warwick", "Jungling");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
             emcJob= new EmcJob("Soraka", "Healing");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
             emcJob= new EmcJob("Kassadin", "Rifting");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
             emcJob= new EmcJob("Teemo", "Trippin' on shrooms");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
             emcJob= new EmcJob("Urf", "Joking");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
             emcJob= new EmcJob("Soraka", "Throwing bananas");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
             emcJob= new EmcJob("Teemo", "Feeding");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
             emcJob= new EmcJob("Teemo", "Hiding");
-            emcJob.create();
+            create(emcJob);
             this.save(emcJob);
 
-
-            for (int i =0; i<1000; i++) {
-                emcJob= new EmcJob("Teemo", "Hiding");
-                emcJob.create();
-                this.save(emcJob);
-            }
 
 
         } catch (InternalErrorException e) {

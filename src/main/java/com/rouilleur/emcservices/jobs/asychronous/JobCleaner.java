@@ -30,12 +30,8 @@ public class JobCleaner {
         try {
             for (EmcJob aJob: jobRepository.findAll()) {
                 if (aJob.isMarkedForDeletion()){
-                    if (aJob.delete()){
-                        logger.info("Cleaned job {}", aJob.getId());
-                        jobRepository.delete(aJob.getId());
-                    }else{
-                        logger.info("Can't clean job {}, skipping", aJob.getId());
-                    }
+                    //TODO : check error/success and log it
+                    jobRepository.delete(aJob.getId());
                 }
             }
         } catch (InternalErrorException e) {
@@ -44,9 +40,6 @@ public class JobCleaner {
             }else{
                 throw e;
             }
-        } catch (LockedResourceException e) {
-            //NB : this shouldn't happen since delete authorize failures and doesn't pass in code which throw exceptions
-            logger.warn("Can't acquire lock on a resource for deletion");
         }
     }
 

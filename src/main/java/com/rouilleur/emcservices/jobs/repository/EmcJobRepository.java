@@ -11,7 +11,9 @@ import com.rouilleur.emcservices.jobs.EmcJob;
 
 public interface EmcJobRepository {
 
-    EmcJob save(EmcJob emcJob) throws InternalErrorException;
+    void create(EmcJob emcJob) throws InternalErrorException;
+
+    void save(EmcJob emcJob) throws InternalErrorException;
 
     EmcJob findOne(Long aLong) throws InternalErrorException;
 

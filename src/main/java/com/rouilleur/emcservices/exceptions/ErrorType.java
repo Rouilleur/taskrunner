@@ -15,10 +15,10 @@ public enum ErrorType {
             500001,
             "Uninitialized job repository",
             "Job repository wasn't correctly initialized"),
-    REFRESH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+    PERSISTENCE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             500002,
             "Error while trying to read job info",
-            "An error occurred while trying to read data to refresh job information"),
+            "An error occurred while trying to read/write persisted information"),
 
     //Bad request errors
     UNDOCUMENTED_BAD_REQUEST(HttpStatus.BAD_REQUEST,

@@ -34,7 +34,6 @@ public class JobServiceImpl implements JobService {
         for (EmcJob job: emcJobRepository.findAll()) {
             if (!job.isMarkedForDeletion()) {
                 //TODO : just for test atm, we could avoid refresh on all jobs for each request
-                job.refresh(false);
 
                 if (submitter == null && status == null){
                     result.add(job);
@@ -69,7 +68,6 @@ public class JobServiceImpl implements JobService {
                 //TODO : Bof... what if the method is reused and called with null param even the request was correct (exception would be misleading)
                 throw new ResourceNotFoundException(ErrorType.RESOURCE_NOT_FOUND, "Can't find job "+ jobId);
             }else {
-                theJob.refresh(false);
                 return theJob;
             }
         }
